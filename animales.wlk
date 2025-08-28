@@ -34,7 +34,8 @@ class Vacas inherits Animales (peso = 50, especie = 'Vaca'){
   }
 
   override method tomar(){
-    if(sed == true){ peso -= 1 }
+    sed = false
+    peso -= 1 
   }
 
   override method vacunar(){
@@ -62,6 +63,8 @@ class Cerdos inherits Animales (peso = 30, especie = 'Cerdo'){
     if (sed == false){ veces_c += 1 }
 
     self.hambriento()
+
+    self.sediento()
   }
 
   method hambriento() {
@@ -110,6 +113,10 @@ class Pollos inherits Animales (peso = 4, especie = 'Pollo'){
 object granja{
   var property animales = []
   var property estados =  []
+
+  var property estado = 0 
+
+  const property lista_estados = [0, 1] 
 
   // --- ESTADOS DE TODOS LOS ANIMALES ---
   method cuales_hambrientos(){
@@ -166,7 +173,9 @@ object granja{
 
   method vacunacion_completa(){
     animales.forEach({ animal =>  
-      if(animal.especie() != 'Pollo'){animal.vacunar()}
+      if(animal.enfermo() == false){
+        animal.vacunar()
+      }
   
     } )
   }
@@ -178,5 +187,29 @@ object granja{
     } )
   }
 
+  method hidratacion_completa(){
+    animales.forEach({ animal =>  
+      animal.tomar()
+  
+    } )
+  }
+
+// --- MANEJO DE ESTADOS ---
+
+  method enfermarse_hijos(animal) {
+    estado = lista_estados.anyOne()
+    if(estado == 0){animal.enfermo(false)}
+    else{animal.enfermo(true)}
+    
+  }
+ 
+// --- ENFERMAR ANIMALES ---
+
+  method enfermar(animal){
+    
+    if(granja.animales().get(animal).vacunado() == false){
+      granja.animales().get(animal).enfermo(true)
+    }
+  }
 
 }
