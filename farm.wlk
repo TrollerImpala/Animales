@@ -281,7 +281,7 @@ object granja{
 
   method vacunar(animal) {
 
-    if(granja.animales().get(animal).enfermo() == true){animales.remove(animal)}
+    if(granja.animales().get(animal).enfermo() == true){animales.remove(animales.get(animal))}
     else{animales.get(animal).vacunado(true) }
     }
 }
