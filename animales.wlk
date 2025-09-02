@@ -40,8 +40,11 @@ class Vacas inherits Animales (peso = 50, especie = 'Vaca'){
   }
 
   override method vacunar(){
-    if (vacunado == false){vacunado = true}
-
+    if (vacunado == false){
+      vacunado = true
+      return true
+    }
+    else{ return false }
   }
 
 
@@ -220,7 +223,7 @@ object granja{
 
 // --- ESTAR JUNTOS CON LA FAMILIA ---
  
-    method juntos_abiertos(){
+  method juntos_abiertos(){
 
     animal_a = animales.anyOne()
     animal_b = animales.anyOne()
@@ -228,13 +231,26 @@ object granja{
     if(animal_a != animal_b){
       juntos = [animal_a, animal_b]
       self.crear_crias()
+      self.contagiar()
     }
     else{self.juntos_abiertos()}
 
      
+  }
+
+  method contagiar(){
+
+    if(animal_a.enfermo() == true && animal_b.enfermo() == false){ 
+      animal_b.enfermo(posibilidades_de_enfermo.anyOne())
     }
 
-    method crear_crias(){
+    if(animal_a.enfermo() == false && animal_b.enfermo() == true){ 
+      animal_a.enfermo(posibilidades_de_enfermo.anyOne())
+    }
+
+  }
+
+  method crear_crias(){
       if(juntos.get(0).especie() == juntos.get(1).especie()){
         numero = 0.randomUpTo(3).roundUp()
             if(animal_a.enfermo() == false || animal_b.enfermo() == false){
@@ -284,7 +300,7 @@ object granja{
   method vacunar(animal) {
 
     if(animales.get(animal).enfermo() == true){animales.remove(animales.get(animal))}
-    else{animales.get(animal).vacunado(true) }
+    else{ return animales.get(animal).vacunar() }
   }
 
   method tomar(animal) {

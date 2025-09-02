@@ -1,0 +1,152 @@
+import animales.*
+
+describe "acciones" {
+  test "vacunaciones" {
+    granja.crear_vacas(1)
+    granja.crear_cerdos(1)
+    granja.crear_pollos(1)
+
+    assert.notThat(granja.animales().get(0).vacunado())
+    assert.notThat(granja.animales().get(1).vacunado())
+    assert.notThat(granja.animales().get(2).vacunado())
+
+    assert.that(granja.vacunar(0))
+    granja.vacunar(1)
+    granja.vacunar(2)
+    
+
+
+    assert.that(granja.animales().get(0).vacunado())
+    assert.that(granja.animales().get(1).vacunado())
+    assert.notThat(granja.animales().get(2).vacunado())
+
+    assert.notThat(granja.vacunar(0))
+  }
+
+  test "sedientos"{
+    granja.crear_vacas(1)
+    granja.crear_cerdos(1)
+    granja.crear_pollos(1)
+
+    assert.notThat(granja.animales().get(0).sed())
+    assert.notThat(granja.animales().get(1).sed())
+    assert.notThat(granja.animales().get(2).sed())
+
+
+    granja.almuerzo_completo(9)
+
+    assert.that(granja.animales().get(0).sed())
+    assert.notThat(granja.animales().get(1).sed())
+
+    granja.almuerzo_completo(9)
+    granja.almuerzo_completo(9)
+
+    assert.that(granja.animales().get(1).sed())
+    assert.notThat(granja.animales().get(2).sed())
+
+    granja.hidratacion_completa()
+
+    assert.notThat(granja.animales().get(0).sed())
+    assert.notThat(granja.animales().get(1).sed())
+    assert.notThat(granja.animales().get(2).sed())
+  }
+
+    test "almorzar"{
+        granja.crear_vacas(1)
+        granja.crear_cerdos(1)
+        granja.crear_pollos(1)
+
+        assert.that(granja.animales().get(0).hambre())
+        assert.that(granja.animales().get(1).hambre())
+        assert.that(granja.animales().get(2).hambre())
+
+        assert.that(granja.animales().get(0).peso() == 50)
+        assert.that(granja.animales().get(1).peso() == 30)
+        assert.that(granja.animales().get(2).peso() == 4)
+
+        granja.almuerzo_completo(1000)
+
+        assert.that(granja.animales().get(0).peso() == 500 )
+        assert.that(granja.animales().get(0).peso() == 995 )
+        assert.that(granja.animales().get(0).peso() == 4 )
+
+        assert.notThat(granja.animales().get(0).hambre())
+        assert.notThat(granja.animales().get(1).hambre())
+        assert.that(granja.animales().get(2).hambre())
+
+    }
+}
+
+describe "crias y enfermedad"{
+    test "enfermedades"{
+        granja.crear_vacas(1)
+        granja.crear_cerdos(1)
+        granja.crear_pollos(1)
+
+        assert.notThat(granja.animales().get(0).enfermo())
+        assert.notThat(granja.animales().get(1).enfermo())
+        assert.notThat(granja.animales().get(2).enfermo())
+
+        granja.enfermar(0)
+        granja.enfermar(1)
+        granja.enfermar(2)
+
+        assert.that(granja.animales().get(0).enfermo())
+        assert.that(granja.animales().get(1).enfermo())
+        assert.that(granja.animales().get(2).enfermo())
+
+        granja.vacunacion_completa()
+
+        assert.that(granja.animales().size() == 1)
+
+
+        granja.animales().remove(granja.animales().get(0))
+
+
+
+        granja.crear_vacas(1)
+        granja.crear_cerdos(1)
+        granja.crear_pollos(1)
+
+        granja.vacunacion_completa()
+
+        granja.enfermar(0)
+        granja.enfermar(1)
+        granja.enfermar(2)
+
+        assert.notThat(granja.animales().get(0).enfermo())
+        assert.notThat(granja.animales().get(1).enfermo())
+        assert.that(granja.animales().get(2).enfermo())
+
+    }
+
+    test "crias"{
+
+        granja.crear_vacas(2)
+
+        granja.juntos_abiertos()
+
+        assert.that(granja.animales().size() > 2)
+
+        granja.juntos_abiertos()
+
+        assert.that(granja.animales().size() > 3)
+
+        granja.juntos_abiertos()
+
+        assert.that(granja.animales().size() >= 5)
+
+    }
+
+    test "contagio"{
+
+        granja.crear_vacas(2)
+        granja.juntos_abiertos()
+        granja.animal_a(granja.animales().get(0))
+        granja.animal_b(granja.animales().get(1))
+
+        granja.crear_crias()
+
+        assert.notThat(granja.animales().get(2).enfermo())
+    }
+}
