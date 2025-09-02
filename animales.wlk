@@ -1,4 +1,5 @@
 class Animales{
+  var property anuncio_fin = 0
   var property hambre = true
   const property especie = 'Animal'
   var property sed = false
@@ -113,10 +114,19 @@ class Pollos inherits Animales (peso = 4, especie = 'Pollo'){
 object granja{
   var property animales = []
   var property estados =  []
+  var property juntos = []
+  var property animal_a = 0
+  var property animal_b = 0
+  var property numero = 0
+  var property posibilidades_de_enfermo = [false, true]
+  var property contador = 0
+  var posibilidad = false
+ 
+  var ultimo = 0
 
-  var property estado = 0 
+  var property estado = 0
 
-  const property lista_estados = [0, 1] 
+  const property lista_estados = [0, 1]
 
   // --- ESTADOS DE TODOS LOS ANIMALES ---
   method cuales_hambrientos(){
@@ -128,7 +138,7 @@ object granja{
     return estados
   }
 
-  
+ 
   method cuales_sedientos(){
     estados = []
     animales.forEach({ animal =>
@@ -176,40 +186,133 @@ object granja{
       if(animal.enfermo() == false){
         animal.vacunar()
       }
-  
+      else{
+        animales.remove(animal)
+      }
+ 
     } )
   }
-  
+ 
   method almuerzo_completo(cantidad_alimento){
     animales.forEach({ animal =>  
       animal.comer(cantidad_alimento)
-  
+ 
     } )
   }
 
   method hidratacion_completa(){
     animales.forEach({ animal =>  
       animal.tomar()
-  
+ 
     } )
-  }
-
-// --- MANEJO DE ESTADOS ---
-
-  method enfermarse_hijos(animal) {
-    estado = lista_estados.anyOne()
-    if(estado == 0){animal.enfermo(false)}
-    else{animal.enfermo(true)}
-    
   }
  
 // --- ENFERMAR ANIMALES ---
 
   method enfermar(animal){
-    
-    if(granja.animales().get(animal).vacunado() == false){
-      granja.animales().get(animal).enfermo(true)
+   
+    if(animales.get(animal).vacunado() == false){
+      animales.get(animal).enfermo(true)
     }
+
+
+  }
+
+// --- ESTAR JUNTOS CON LA FAMILIA ---
+ 
+    method juntos_abiertos(){
+
+    animal_a = animales.anyOne()
+    animal_b = animales.anyOne()
+
+    if(animal_a != animal_b){
+      juntos = [animal_a, animal_b]
+      self.crear_crias()
+    }
+    else{self.juntos_abiertos()}
+
+     
+    }
+
+    method crear_crias(){
+      if(juntos.get(0).especie() == juntos.get(1).especie()){
+        numero = 0.randomUpTo(3).roundUp()
+            if(animal_a.enfermo() == false || animal_b.enfermo() == false){
+       
+                if(juntos.get(0).especie() == 'Vaca'){
+                    numero.times({n => animales.add(new Vacas())})
+                }
+                else if(juntos.get(0).especie() == 'Cerdo'){
+                    numero.times({n => animales.add(new Cerdos())})
+                }
+                else if(juntos.get(0).especie() == 'Pollo'){
+                    numero.times({n => animales.add(new Pollos())})
+        }
+        }
+
+            if(animal_a.enfermo() == true || animal_b.enfermo() == true){
+               
+                posibilidad = posibilidades_de_enfermo.anyOne()
+       
+                if(juntos.get(0).especie() == 'Vaca'){
+                    numero.times({n => animales.add(new Vacas())
+                      ultimo = animales.size() - 1
+                      self.enfermar(ultimo)
+                    })
+                }
+                else if(juntos.get(0).especie() == 'Cerdo'){
+                    numero.times({n => animales.add(new Cerdos())
+                      ultimo = animales.size() - 1
+                      self.enfermar(ultimo)
+                     
+                    })
+                }
+                else if(juntos.get(0).especie() == 'Pollo'){
+                    numero.times({n => animales.add(new Pollos())
+                      ultimo = animales.size() - 1
+                      self.enfermar(ultimo)
+                    })
+        }
+        }
+     
+    }
+    }
+
+
+// --- ACCIONES ANIMALES INDIVIDUALES ---
+
+  method vacunar(animal) {
+
+    if(animales.get(animal).enfermo() == true){animales.remove(animales.get(animal))}
+    else{animales.get(animal).vacunado(true) }
+  }
+
+  method tomar(animal) {
+    animales.get(animal).tomar()
+  }
+
+  method comer(animal, cantidad) {
+    animales.get(animal).comer(cantidad)
+  }
+
+
+
+// --- SIMULACION DE GRANJA ---
+
+  method simulacion_diaria(){
+    
+    animales.forEach({ n=> 
+    
+      contador += 1
+
+    
+
+      if(n.enfermo() == true){ n.anuncio_fin(n.anuncio_fin() + 1) }
+      else{n.anuncio_fin(0)}
+
+      if(n.anuncio_fin() == 3){animales.remove(n)} 
+     })
+
   }
 
 }
