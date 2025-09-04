@@ -66,14 +66,46 @@ describe "acciones" {
 
         granja.almuerzo_completo(1000)
 
-        assert.that(granja.animales().get(0).peso() == 500 )
-        assert.that(granja.animales().get(0).peso() == 995 )
-        assert.that(granja.animales().get(0).peso() == 4 )
+        assert.that(granja.animales().get(0).peso() == 550 )
+        assert.that(granja.animales().get(1).peso() == 1025 )
+        assert.that(granja.animales().get(2).peso() == 4 )
 
         assert.notThat(granja.animales().get(0).hambre())
         assert.notThat(granja.animales().get(1).hambre())
         assert.that(granja.animales().get(2).hambre())
 
+    }
+
+    test "caminata larga"{
+      granja.crear_vacas(1)
+
+      granja.caminar_vaca(0)
+
+      assert.that(granja.animales().get(0).peso() == 47)
+
+      assert.that(granja.animales().get(0).peso() < 50)
+
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+      granja.caminar_vaca(0)
+
+      assert.that(granja.animales().get(0).peso() < 3)
+
+      granja.caminar_vaca(0)
+
+      assert.that(granja.animales().get(0).peso() > 0)
     }
 }
 
@@ -122,7 +154,13 @@ describe "crias y enfermedad"{
 
     test "crias"{
 
-        granja.crear_vacas(2)
+        granja.crear_vacas(1)
+
+        granja.juntos_abiertos()
+
+        assert.that(granja.animales().size() == 1)
+
+        granja.crear_vacas(1)
 
         granja.juntos_abiertos()
 
@@ -138,15 +176,18 @@ describe "crias y enfermedad"{
 
     }
 
-    test "contagio"{
+    test "contagio y crias"{
+
 
         granja.crear_vacas(2)
-        granja.juntos_abiertos()
-        granja.animal_a(granja.animales().get(0))
-        granja.animal_b(granja.animales().get(1))
 
-        granja.crear_crias()
+        granja.enfermar(0)
 
-        assert.notThat(granja.animales().get(2).enfermo())
+        granja.juntos_abiertos_cien()
+
+        assert.that(granja.animales().get(1).enfermo())
+
+
+        assert.that(granja.animales().get(2).enfermo())
     }
 }

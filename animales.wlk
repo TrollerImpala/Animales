@@ -189,7 +189,7 @@ object granja{
       if(animal.enfermo() == false){
         animal.vacunar()
       }
-      else{
+      else if (animal.especie() != "Pollo"){
         animales.remove(animal)
       }
  
@@ -225,17 +225,18 @@ object granja{
  
   method juntos_abiertos(){
 
-    animal_a = animales.anyOne()
-    animal_b = animales.anyOne()
+    if(animales.size() > 1){
+      animal_a = animales.anyOne()
+      animal_b = animales.anyOne()
 
-    if(animal_a != animal_b){
-      juntos = [animal_a, animal_b]
-      self.crear_crias()
-      self.contagiar()
+      if(animal_a != animal_b){
+        juntos = [animal_a, animal_b]
+        self.crear_crias()
+        self.contagiar()
+      }
+      else{self.juntos_abiertos()}
+
     }
-    else{self.juntos_abiertos()}
-
-     
   }
 
   method contagiar(){
@@ -253,7 +254,7 @@ object granja{
   method crear_crias(){
       if(juntos.get(0).especie() == juntos.get(1).especie()){
         numero = 0.randomUpTo(3).roundUp()
-            if(animal_a.enfermo() == false || animal_b.enfermo() == false){
+            if(animal_a.enfermo() == false && animal_b.enfermo() == false){
        
                 if(juntos.get(0).especie() == 'Vaca'){
                     numero.times({n => animales.add(new Vacas())})
@@ -273,20 +274,26 @@ object granja{
                 if(juntos.get(0).especie() == 'Vaca'){
                     numero.times({n => animales.add(new Vacas())
                       ultimo = animales.size() - 1
-                      self.enfermar(ultimo)
+                      if(posibilidad == true){
+                        self.enfermar(ultimo)
+                      }
                     })
                 }
                 else if(juntos.get(0).especie() == 'Cerdo'){
                     numero.times({n => animales.add(new Cerdos())
                       ultimo = animales.size() - 1
-                      self.enfermar(ultimo)
+                      if(posibilidad == true){
+                        self.enfermar(ultimo)
+                      }
                      
                     })
                 }
                 else if(juntos.get(0).especie() == 'Pollo'){
                     numero.times({n => animales.add(new Pollos())
                       ultimo = animales.size() - 1
-                      self.enfermar(ultimo)
+                      if(posibilidad == true){
+                        self.enfermar(ultimo)
+                      }
                     })
         }
         }
@@ -315,13 +322,25 @@ object granja{
 
 // --- SIMULACION DE GRANJA ---
 
+  method caminar_vaca(num){
+
+
+    if(animales.get(num).especie() == "Vaca" && animales.get(num).peso() > 3){
+
+      animales.get(num).caminar()
+
+    }
+
+
+  }
+
   method simulacion_diaria(){
     
     animales.forEach({ n=> 
     
       contador += 1
 
-    
+      self.juntos_abiertos()
 
       if(n.enfermo() == true){ n.anuncio_fin(n.anuncio_fin() + 1) }
       else{n.anuncio_fin(0)}
@@ -330,5 +349,82 @@ object granja{
      })
 
   }
+
+
+  // --- JUNTAR 100% PROBABILIDAD ---
+
+    method juntos_abiertos_cien(){
+    
+    if (animales.size() > 1){
+
+      animal_a = animales.anyOne()
+      animal_b = animales.anyOne()
+
+      if(animal_a != animal_b){
+        juntos = [animal_a, animal_b]
+        self.crear_crias_cien()
+        self.contagiar_cien()
+      }
+      else{self.juntos_abiertos_cien()}
+
+    }
+
+  }
+
+  method contagiar_cien(){
+
+    if(animal_a.enfermo() == true && animal_b.enfermo() == false){ 
+      animal_b.enfermo(true)
+    }
+
+    if(animal_a.enfermo() == false && animal_b.enfermo() == true){ 
+      animal_a.enfermo(true)
+    }
+
+  }
+
+  method crear_crias_cien(){
+      if(juntos.get(0).especie() == juntos.get(1).especie()){
+        numero = 0.randomUpTo(3).roundUp()
+            if(animal_a.enfermo() == false && animal_b.enfermo() == false){
+       
+                if(juntos.get(0).especie() == 'Vaca'){
+                    numero.times({n => animales.add(new Vacas())})
+                }
+                else if(juntos.get(0).especie() == 'Cerdo'){
+                    numero.times({n => animales.add(new Cerdos())})
+                }
+                else if(juntos.get(0).especie() == 'Pollo'){
+                    numero.times({n => animales.add(new Pollos())})
+        }
+        }
+
+            if(animal_a.enfermo() == true || animal_b.enfermo() == true){
+               
+            
+       
+                if(juntos.get(0).especie() == 'Vaca'){
+                    numero.times({n => animales.add(new Vacas())
+                      ultimo = animales.size() - 1
+                      self.enfermar(ultimo)
+                    })
+                }
+                else if(juntos.get(0).especie() == 'Cerdo'){
+                    numero.times({n => animales.add(new Cerdos())
+                      ultimo = animales.size() - 1
+                      self.enfermar(ultimo)
+                     
+                    })
+                }
+                else if(juntos.get(0).especie() == 'Pollo'){
+                    numero.times({n => animales.add(new Pollos())
+                      ultimo = animales.size() - 1
+                      self.enfermar(ultimo)
+                    })
+        }
+        }
+     
+    }
+    }
 
 }
