@@ -127,9 +127,6 @@ object granja{
  
   var ultimo = 0
 
-  var property estado = 0
-
-  const property lista_estados = [0, 1]
 
   // --- ESTADOS DE TODOS LOS ANIMALES ---
   method cuales_hambrientos(){
@@ -338,10 +335,9 @@ object granja{
     
     contador += 1
 
-    animales.forEach({ n=> 
-    
+    self.juntos_abiertos()
 
-      self.juntos_abiertos()
+    animales.forEach({ n=> 
 
       if(n.enfermo() == true){ n.anuncio_fin(n.anuncio_fin() + 1) }
       else{n.anuncio_fin(0)}
