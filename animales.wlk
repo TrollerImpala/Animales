@@ -336,9 +336,10 @@ object granja{
 
   method simulacion_diaria(){
     
+    contador += 1
+
     animales.forEach({ n=> 
     
-      contador += 1
 
       self.juntos_abiertos()
 
